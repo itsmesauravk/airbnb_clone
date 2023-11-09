@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 require("dotenv").config()
 const cors = require("cors")
+const cookieParser = require("cookie-parser")
 const app = express()
 
 const jwtSecret = "qwertyuiop123asdf"
@@ -16,6 +17,7 @@ app.use(
   })
 )
 app.use(express.json())
+app.use(cookieParser())
 
 mongoose.connect(process.env.MONGO_URL)
 
@@ -52,7 +54,7 @@ app.post("/login", async (req, res) => {
         {},
         (err, token) => {
           if (err) throw err
-          res.cookie("token", token).json("Correct password")
+          res.cookie("token", token).json(userDoc)
         }
       )
     } else {
@@ -63,6 +65,18 @@ app.post("/login", async (req, res) => {
   }
 })
 
+app.get("/profile", (req, res) => {
+  const { token } = req.cookies
+  if (token) {
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err
+      const { name, email, _id } = await User.findById(userData.id)
+      res.json({ name, email, _id })
+    })
+  } else {
+    res.json(null)
+  }
+})
 //booking
 
 app.listen(4000, console.log(`Server is listning to port 4000`))
