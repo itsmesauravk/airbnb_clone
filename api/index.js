@@ -1,10 +1,13 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const User = require("./models/User")
+const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 require("dotenv").config()
 const cors = require("cors")
 const app = express()
+
+const jwtSecret = "qwertyuiop123asdf"
 
 app.use(
   cors({
@@ -43,9 +46,17 @@ app.post("/login", async (req, res) => {
   if (userDoc) {
     const checkPassword = bcrypt.compareSync(password, userDoc.password)
     if (checkPassword) {
-      res.json("Correct password")
+      jwt.sign(
+        { email: userDoc.email, id: userDoc._id },
+        jwtSecret,
+        {},
+        (err, token) => {
+          if (err) throw err
+          res.cookie("token", token).json("Correct password")
+        }
+      )
     } else {
-      res.json("Incorrect password")
+      res.status(422).json("Incorrect password")
     }
   } else {
     res.json("cannot login")
