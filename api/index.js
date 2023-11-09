@@ -77,6 +77,10 @@ app.get("/profile", (req, res) => {
     res.json(null)
   }
 })
+
+app.post("/logout", (req, res) => {
+  res.cookie("token", "").json(true)
+})
 //booking
 
 app.listen(4000, console.log(`Server is listning to port 4000`))

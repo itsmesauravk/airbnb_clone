@@ -10,5 +10,5 @@ input[type="password"] {
 
 button.primary {
   background-color: #f5385d;
-  @apply bg-primary w-full p-2 rounded-2xl my-1;
+  @apply bg-primary w-full p-2 rounded-2xl my-1 text-white;
 }
