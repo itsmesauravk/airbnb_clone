@@ -19,8 +19,6 @@ app.use(
 app.use(express.json())
 app.use(cookieParser())
 
-mongoose.connect(process.env.MONGO_URL)
-
 app.get("/test", (req, res) => {
   res.json("Welcome")
 })
@@ -82,5 +80,13 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true)
 })
 //booking
+function connectDatabase() {
+  try {
+    mongoose.connect(process.env.MONGO_URL)
+    app.listen(4000, console.log(`Server is listning to port 4000`))
+  } catch (error) {
+    console.log("Couldnot connect to database. " + error)
+  }
+}
 
-app.listen(4000, console.log(`Server is listning to port 4000`))
+connectDatabase()
