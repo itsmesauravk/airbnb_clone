@@ -20,7 +20,7 @@ export default function AccountPage() {
   }
 
   if (!ready) {
-    return "Loading user data..."
+    return <span class="loader"></span>
   }
   if (ready && !user && !redirect) {
     return <Navigate to={"/login"} />

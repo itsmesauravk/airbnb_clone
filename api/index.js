@@ -6,6 +6,8 @@ const bcrypt = require("bcryptjs")
 require("dotenv").config()
 const cors = require("cors")
 const cookieParser = require("cookie-parser")
+const imageDownloader = require("image-downloader")
+
 const app = express()
 
 const jwtSecret = "qwertyuiop123asdf"
@@ -18,6 +20,7 @@ app.use(
 )
 app.use(express.json())
 app.use(cookieParser())
+app.use("/uploads", express.static(__dirname + "/uploads")) //to show photos in the browser
 
 app.get("/test", (req, res) => {
   res.json("Welcome")
@@ -79,6 +82,18 @@ app.get("/profile", (req, res) => {
 app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true)
 })
+// console.log(__dirname)
+//for downloading image with link
+app.post("/upload-by-link", async (req, res) => {
+  const { link } = req.body
+  const newName = "photo" + Date.now() + ".jpg"
+  await imageDownloader.image({
+    url: link,
+    dest: __dirname + "/uploads" + newName,
+  })
+  res.json(newName)
+})
+
 //booking
 function connectDatabase() {
   try {
