@@ -96,6 +96,7 @@ app.post("/upload-by-link", async (req, res) => {
 
 //booking
 function connectDatabase() {
+  //for handling errors
   try {
     mongoose.connect(process.env.MONGO_URL)
     app.listen(4000, console.log(`Server is listning to port 4000`))
